@@ -25,6 +25,6 @@ export function getMostExpensive(size: number = 3): Meme[] {
   );
 }
 
-export function getMeme(id: number) {
-  return memes.find((meme) => meme.id === id);
+export function getMeme(id: string) {
+  return memes.find((meme) => meme.id === parseInt(id, 10));
 }
