@@ -1,0 +1,15 @@
+extends base.pug
+block content
+  h1= 'Meme ' + meme.name
+  p= 'Price: ' + meme.price
+  img(src=meme.url)
+  table
+    caption History of price
+    thead
+      th Price
+      th Date
+    tbody
+      each price in meme.getPrices()
+        tr
+          td= price.value
+          td= price.date.toDateString()
