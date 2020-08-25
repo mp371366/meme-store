@@ -15,4 +15,5 @@ block content
           td= price.date.toDateString()
   form(method='POST')
     input#price(type='number' name='price' plaveholder='New price' required)
+    input(type='hidden' name='_csrf' value=csrfToken)
     input(type='submit' value='Set new price')
