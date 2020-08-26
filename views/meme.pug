@@ -9,7 +9,7 @@ block content
       th Price
       th Date
     tbody
-      each price in meme.getPrices()
+      each price in meme.prices
         tr
           td= price.value
           td= price.date.toDateString()

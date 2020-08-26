@@ -1,7 +1,7 @@
 import * as express from 'express';
 import * as csrf from 'csurf';
 import * as cookieParser from 'cookie-parser';
-import { getMostExpensive, getMeme } from './memes';
+import { getMostExpensive, getMeme, updateMemePrice } from './memes';
 
 const app = express();
 const port = 3000;
@@ -14,20 +14,19 @@ app.use(express.urlencoded({
 app.use(cookieParser());
 app.use(csrf({ cookie: true }));
 
-app.get('/', (request, response) => {
-  const mostExpensive = getMostExpensive();
-  response.render('index', { title: 'Meme store', message: 'Hello there!', memes: mostExpensive });
+app.get('/', async (request, response) => {
+  const memes = await getMostExpensive();
+  response.render('index', { title: 'Meme store', message: 'Hello there!', memes });
 });
 
-app.get('/meme/:memeId', (request, response) => {
-  const meme = getMeme(request.params.memeId);
+app.get('/meme/:memeId', async (request, response) => {
+  const meme = await getMeme(request.params.memeId);
   response.render('meme', { title: `Meme ${meme.name}`, meme, csrfToken: request.csrfToken() });
 });
 
-app.post('/meme/:memeId', (request, response) => {
-  const meme = getMeme(request.params.memeId);
-  const price = request.body.price;
-  meme.price = price;
+app.post('/meme/:memeId', async (request, response) => {
+  await updateMemePrice(request.params.memeId, request.body.price);
+  const meme = await getMeme(request.params.memeId);
   response.render('meme', { title: `Meme ${meme.name}`, meme, csrfToken: request.csrfToken() });
 });
 
