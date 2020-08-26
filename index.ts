@@ -1,6 +1,7 @@
 import express from 'express';
 import csrf from 'csurf';
 import cookieParser from 'cookie-parser';
+import session from 'express-session';
 import { getMostExpensive, getMeme, updateMemePrice } from './memes';
 
 const app = express();
@@ -13,6 +14,25 @@ app.use(express.urlencoded({
 }));
 app.use(cookieParser());
 app.use(csrf({ cookie: true }));
+app.use(session({
+  secret: 'meme',
+  resave: false,
+  saveUninitialized: true
+}));
+
+app.use((request, response, next) => {
+  if (request.session && !request.url.endsWith('.js.map') && request.method === 'GET') {
+    if (!request.session.pages) {
+      request.session.pages = [];
+    }
+
+    if (!request.session.pages.includes(request.url)) {
+      request.session.pages.push(request.url);
+    }
+  }
+
+  next();
+});
 
 app.get('/', async (request, response) => {
   const memes = await getMostExpensive();
@@ -20,6 +40,7 @@ app.get('/', async (request, response) => {
     title: 'Meme store',
     message: 'Hello there!',
     memes,
+    visitedPages: request.session?.pages?.length ?? 0,
   });
 });
 
@@ -29,6 +50,7 @@ app.get('/meme/:memeId', async (request, response) => {
     title: `Meme ${meme.name}`,
     meme,
     csrfToken: request.csrfToken(),
+    visitedPages: request.session?.pages?.length ?? 0,
   });
 });
 
@@ -39,6 +61,7 @@ app.post('/meme/:memeId', async (request, response) => {
     title: `Meme ${meme.name}`,
     meme,
     csrfToken: request.csrfToken(),
+    visitedPages: request.session?.pages?.length ?? 0,
   });
 });
 

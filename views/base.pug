@@ -2,11 +2,10 @@ doctype
 html(lang='en')
   head
     title= title
-    script: include /views/scripts/session.js
   style
     include /stylesheets/style.css
   body
     header.main-header
       a(href='/') Memes store
-      p#visited-pages-number
+      p= 'Visited-pages: ' + visitedPages
     block content

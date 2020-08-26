@@ -7,8 +7,6 @@
     "start": "npx ts-node index.ts",
     "make-base": "npm run clean-base && npx ts-node scripts/make-base.ts",
     "insert-data": "npx ts-node scripts/insert-data.ts",
-    "build": "tsc",
-    "clean": "find views -name '*.js' -type f -delete && find views -name '*.js.map' -type f -delete",
     "clean-base": "rm -f base.db"
   },
   "keywords": [
@@ -21,6 +19,7 @@
     "cookie-parser": "^1.4.5",
     "csurf": "^1.11.0",
     "express": "^4.17.1",
+    "express-session": "^1.17.1",
     "pug": "^3.0.0",
     "sqlite3": "^5.0.0"
   },
@@ -28,6 +27,7 @@
     "@types/cookie-parser": "^1.4.2",
     "@types/csurf": "^1.9.36",
     "@types/express": "^4.17.7",
+    "@types/express-session": "^1.17.0",
     "@types/node": "^14.6.0",
     "@types/sqlite3": "^3.1.6",
     "ts-node": "^9.0.0",
