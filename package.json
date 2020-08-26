@@ -7,6 +7,8 @@
     "start": "npx ts-node index.ts",
     "make-base": "npm run clean-base && npx ts-node scripts/make-base.ts",
     "insert-data": "npx ts-node scripts/insert-data.ts",
+    "build": "tsc",
+    "clean": "find views -name '*.js' -type f -delete && find views -name '*.js.map' -type f -delete",
     "clean-base": "rm -f base.db"
   },
   "keywords": [
