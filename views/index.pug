@@ -1,7 +1,7 @@
 extends base.pug
 block content
   h1= message
-  img(src='https://lh6.googleusercontent.com/t1e8ops-WDkmkqdEKprRSxJP7NjNqPxCr_TgR1ioiso0nFD6tUKCBVaDraJBCR0p_Vh_4x1AMGduJoQj253x5VWvjBXogs1Qp-WQ6ZgX6y2NrtqtkVc=w1280')
+  img(src='https://lh6.googleusercontent.com/t1e8ops-WDkmkqdEKprRSxJP7NjNqPxCr_TgR1ioiso0nFD6tUKCBVaDraJBCR0p_Vh_4x1AMGduJoQj253x5VWvjBXogs1Qp-WQ6ZgX6y2NrtqtkVc=w1280', alt=message)
   h1='Meme list'
   ul
     each meme in memes
@@ -9,4 +9,4 @@ block content
         .description
           a(href='meme/' + meme.id) #{meme.name}
           p= 'Price: ' + meme.price
-        img(src=meme.url)
+        img(src=meme.url alt=meme.name)
