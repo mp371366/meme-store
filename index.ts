@@ -3,6 +3,7 @@ import csrf from 'csurf';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import { getMostExpensive, getMeme, updateMemePrice } from './memes';
+import { addVisit, getVisits } from './session';
 
 const app = express();
 const port = 3000;
@@ -23,14 +24,14 @@ app.use(session({
   },
 }));
 
-app.use((request, response, next) => {
-  if (request.session && !request.url.endsWith('.js.map') && request.method === 'GET') {
-    if (!request.session.pages) {
-      request.session.pages = [];
+app.use(async (request, response, next) => {
+  if (request.sessionID !== undefined) {
+    if (!request.url.endsWith('.js.map') && request.method === 'GET') {
+      await addVisit(request.sessionID, request.url);
     }
 
-    if (!request.session.pages.includes(request.url)) {
-      request.session.pages.push(request.url);
+    if (request.session) {
+      request.session.pages = await getVisits(request.sessionID);
     }
   }
 
