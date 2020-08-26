@@ -6,9 +6,8 @@ body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   text-align: center;
 }
-
-body {
-  padding: 0%;
+main {
+  min-height: calc(100vh - 100px);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -33,9 +32,37 @@ li {
   border-top: 1px solid gray;
 }
 
+.main-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+  width: 100%;
+}
+
+.main-header>* {
+  padding: 0px 20px;
+}
+
 .description {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: baseline;
+}
+
+form>div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+  width: 220px;
+}
+
+label {
+  padding: 4px;
+}
+
+input[type='text'], input[type='password'] {
+  width: 120px;
 }

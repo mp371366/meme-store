@@ -5,6 +5,11 @@ sqlite3.verbose();
 const db = new sqlite3.Database('base.db');
 
 db.run(`
+  INSERT INTO account(username, password)
+  VALUES('test', 'test')
+`);
+
+db.run(`
     INSERT INTO meme(id, name, url)
     VALUES
       ("1", "Gold", "https://i.redd.it/h7rplf9jt8y21.png"),
@@ -18,8 +23,8 @@ db.run(`
 for (const [value, date] of [[200, '2020-06-01'], [100, '2020-08-01'], [300, '2020-07-01']]) {
   for (const id of [1, 2, 3, 4, 5]) {
     db.run(`
-        INSERT INTO history(meme, value, date)
-        VALUES (?, ?, ?);
+        INSERT INTO history(meme, value, date, username)
+        VALUES (?, ?, ?, 'test');
       `, [id, value, new Date(date).getTime()]);
   }
 }

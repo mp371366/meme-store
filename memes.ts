@@ -1,5 +1,4 @@
 import Meme from './meme';
-import Pirce from './price';
 import * as sqlite3 from 'sqlite3';
 import MemeWithHistory from './memeWithHistory';
 
@@ -67,14 +66,14 @@ export async function getMeme(id: string): Promise<MemeWithHistory> {
   });
 }
 
-export async function updateMemePrice(id: string, price: number) {
+export async function updateMemePrice(id: string, price: number, username: string) {
   sqlite3.verbose();
   const db = new sqlite3.Database('base.db');
   return await new Promise((resolve, reject) => {
     db.run(`
-      INSERT INTO history(meme, value, date)
-      VALUES (?, ? ,?)
-    `, [id, price, new Date().getTime()], (error) => {
+      INSERT INTO history(meme, value, date, username)
+      VALUES (?, ? ,?, ?)
+    `, [id, price, new Date().getTime(), username], (error) => {
       db.close();
 
       if (error) reject(error);

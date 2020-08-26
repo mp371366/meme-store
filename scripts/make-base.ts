@@ -14,9 +14,10 @@ db.run(`
 
 db.run(`
   CREATE TABLE history(
-    meme  VARCHAR(255),
-    value INT,
-    date  INTEGER
+    meme     VARCHAR(255),
+    value    INT,
+    date     INTEGER,
+    username VARCHAR(255)
   )
 `);
 
@@ -24,6 +25,13 @@ db.run(`
   CREATE TABLE visit(
     session_id VARCHAR(255),
     url        VARCHAR(255)
+  )
+`);
+
+db.run(`
+  CREATE TABLE account(
+    username VARCHAR(255),
+    password VARCHAR(255)
   )
 `);
 

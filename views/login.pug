@@ -1,0 +1,12 @@
+extends base.pug
+block content
+  form(method='POST')
+    p= error
+    div
+      label(for='username') Username
+      input(name='username' type='text' required)
+    div
+      label(for='password') Password
+      input(name='password' type='password' required)
+    input(type='hidden' name='_csrf' value=csrfToken)
+    input(type='submit' value='Log in')

@@ -1,0 +1,8 @@
+.login
+  if logged
+    p= 'Hello, ' + username + '!'
+    form(action='/logout', method='POST')
+      input(type='hidden' name='_csrf' value=csrfToken)
+      input(type='submit' value='Log out')
+  else
+    a(href='/login') Log in

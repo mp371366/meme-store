@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import { getMostExpensive, getMeme, updateMemePrice } from './memes';
 import { addVisit, getVisits } from './session';
+import { login } from './login';
 
 const app = express();
 const port = 3000;
@@ -40,34 +41,99 @@ app.use(async (request, response, next) => {
 
 app.get('/', async (request, response) => {
   const memes = await getMostExpensive();
+  const username = request.session?.username;
+  const logged = username !== undefined;
+
   response.render('index', {
     title: 'Meme store',
     message: 'Hello there!',
     memes,
+    csrfToken: request.csrfToken(),
     visitedPages: request.session?.pages?.length ?? 0,
+    username,
+    logged,
   });
 });
 
 app.get('/meme/:memeId', async (request, response) => {
   const meme = await getMeme(request.params.memeId);
+  const username = request.session?.username;
+  const logged = username !== undefined;
+
   response.render('meme', {
     title: `Meme ${meme.name}`,
     meme,
     csrfToken: request.csrfToken(),
     visitedPages: request.session?.pages?.length ?? 0,
+    username,
+    logged,
   });
 });
 
 app.post('/meme/:memeId', async (request, response) => {
-  await updateMemePrice(request.params.memeId, request.body.price);
+  const username = request.session?.username;
+  const logged = username !== undefined;
+
+  if (!logged) {
+    response.redirect('/');
+
+    return;
+  }
+
+  await updateMemePrice(request.params.memeId, request.body.price, username);
   const meme = await getMeme(request.params.memeId);
+
   response.render('meme', {
     title: `Meme ${meme.name}`,
     meme,
     csrfToken: request.csrfToken(),
     visitedPages: request.session?.pages?.length ?? 0,
+    username,
+    logged,
   });
 });
+
+app.get('/login', (request, response) => {
+  if (request.session?.username !== undefined) {
+    response.redirect('/');
+  }
+
+  response.render('login', {
+    title: 'Login',
+    visitedPages: request.session?.pages?.length ?? 0,
+    csrfToken: request.csrfToken(),
+  });
+});
+
+app.post('/login', async (request, response) => {
+  if (request.session?.username !== undefined) {
+    response.redirect('/');
+  }
+
+  const username = request.body.username;
+  const password = request.body.password;
+  const result = await login(username, password);
+
+  if (result && request.session) {
+    request.session.username = username;
+    response.redirect('/');
+  } else {
+    response.render('login', {
+      title: 'Login',
+      visitedPages: request.session?.pages?.length ?? 0,
+      error: 'Bad login.',
+      csrfToken: request.csrfToken(),
+    })
+  }
+});
+
+app.post('/logout', (request, response) => {
+  if (request.session) {
+    request.session.username = undefined;
+  }
+
+  response.redirect('/');
+})
 
 // tslint:disable-next-line:no-console
 app.listen(port, () => console.log(`Server listening on http://localhost:${port}`));
