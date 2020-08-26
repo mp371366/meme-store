@@ -17,7 +17,10 @@ app.use(csrf({ cookie: true }));
 app.use(session({
   secret: 'meme',
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: true,
+  cookie: {
+    maxAge: 15 * 60 * 1000,
+  },
 }));
 
 app.use((request, response, next) => {
