@@ -16,12 +16,12 @@ app.get('/', (request, response) => {
 });
 
 app.get('/meme/:memeId', (request, response) => {
-  const meme = getMeme(request.params.memeId);
+  const meme = getMeme(parseInt(request.params.memeId, 10));
   response.render('meme', { title: `Meme ${meme.name}`, meme })
 });
 
 app.post('/meme/:memeId', (request, response) => {
-  const meme = getMeme(request.params.memeId);
+  const meme = getMeme(parseInt(request.params.memeId, 10));
   const price = parseInt(request.body.price, 10);
   if (isFinite(price)) {
     meme.price = price;
