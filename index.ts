@@ -11,16 +11,17 @@ config();
 
 const app = express();
 const port = process.env.PORT ?? 3000;
+const secret = process.env.SECRET ?? 'meme';
 
 app.set('view engine', 'pug');
 app.locals.basedir = __dirname;
 app.use(express.urlencoded({
   extended: true
 }));
-app.use(cookieParser());
+app.use(cookieParser(secret));
 app.use(csrf({ cookie: true }));
 app.use(session({
-  secret: 'meme',
+  secret,
   resave: false,
   saveUninitialized: true,
   cookie: {
