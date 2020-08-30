@@ -20,6 +20,7 @@ export async function getMostExpensive(size: number = 3): Promise<Meme[]> {
         ON h.meme = tmp.meme AND h.date = tmp.date
       ) AS history
       ON meme.id = history.meme
+      ORDER BY price DESC
       LIMIT ?
     `, [size], (error, memes) => {
       db.close();
