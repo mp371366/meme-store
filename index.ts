@@ -5,9 +5,12 @@ import session from 'express-session';
 import { getMostExpensive, getMeme, updateMemePrice } from './memes';
 import { addVisit, getVisits } from './session';
 import { login } from './login';
+import { config } from 'dotenv';
+
+config();
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT ?? 3000;
 
 app.set('view engine', 'pug');
 app.locals.basedir = __dirname;
