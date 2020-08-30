@@ -1,5 +1,4 @@
 import Meme from './meme';
-import Pirce from './price';
 
 const memes = [
   new Meme(1, 'Gold', 1000, 'https://i.redd.it/h7rplf9jt8y21.png'),
@@ -8,14 +7,6 @@ const memes = [
   new Meme(4, 'Silver', 1100, 'https://i.insider.com/5ea9887b0fc63978b759c857?width=1100&format=jpeg&auto=webp'),
   new Meme(5, 'Bronze', 1600, 'https://i.imgflip.com/2cjk3l.jpg'),
 ];
-
-memes.forEach((meme) =>
-  meme.prices.push(
-    new Pirce(300, new Date(2020, 7, 1)),
-    new Pirce(2200, new Date(2020, 5, 1)),
-    new Pirce(700, new Date(2020, 6, 1))
-  )
-);
 
 export function getMostExpensive(size: number = 3): Meme[] {
   return (

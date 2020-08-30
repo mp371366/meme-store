@@ -3,7 +3,7 @@ import Price from './price';
 export default class Meme {
   id: number;
   name: string;
-  prices: Price[] = [];
+  private prices: Price[] = [];
   url: string;
 
   constructor(id: number, name: string, price: number, url: string) {
@@ -14,14 +14,14 @@ export default class Meme {
   }
 
   get price() {
-    return this.getPrices()[0].value;
+    return this.prices[0].value;
   }
 
   set price(newPrice: number) {
-    this.prices.push(new Price(newPrice));
+    this.prices.unshift(new Price(newPrice));
   }
 
-  getPrices() {
-    return this.prices.sort((a, b) => b.date.getTime() - a.date.getTime());
+  getPrices(): Readonly<Readonly<Price>[]> {
+    return this.prices;
   }
 }
