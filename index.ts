@@ -22,8 +22,10 @@ app.get('/meme/:memeId', (request, response) => {
 
 app.post('/meme/:memeId', (request, response) => {
   const meme = getMeme(request.params.memeId);
-  const price = request.body.price;
-  meme.price = price;
+  const price = parseInt(request.body.price, 10);
+  if (isFinite(price)) {
+    meme.price = price;
+  }
   response.render('meme', { title: `Meme ${meme.name}`, meme })
 })
 
