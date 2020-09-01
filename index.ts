@@ -101,10 +101,6 @@ app.post('/meme/:memeId', async (request, response) => {
 });
 
 app.get('/login', (request, response) => {
-  if (request.session?.username !== undefined) {
-    response.redirect('/');
-  }
-
   response.render('login', {
     title: 'Login',
     visitedPages: request.session?.pages?.length ?? 0,
@@ -113,10 +109,6 @@ app.get('/login', (request, response) => {
 });
 
 app.post('/login', async (request, response) => {
-  if (request.session?.username !== undefined) {
-    response.redirect('/');
-  }
-
   const username = request.body.username;
   const password = await hash(request.body.password);
   const result = await login(username, password);
