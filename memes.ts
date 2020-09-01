@@ -73,8 +73,8 @@ export async function updateMemePrice(id: string, price: number, username: strin
   return await new Promise((resolve, reject) => {
     db.run(`
       INSERT INTO history(meme, value, date, username)
-      VALUES (?, ? ,?, ?)
-    `, [id, price, new Date().getTime(), username], (error) => {
+      VALUES (?, ? , datetime('now'), ?)
+    `, [id, price, username], (error) => {
       db.close();
 
       if (error) reject(error);
