@@ -6,12 +6,15 @@ import { getMostExpensive, getMeme, updateMemePrice } from './memes';
 import { addVisit, getVisits } from './session';
 import { login } from './login';
 import { config } from 'dotenv';
+import bcrypt from 'bcrypt';
 
 config();
 
 const app = express();
 const port = process.env.PORT ?? 3000;
 const secret = process.env.SECRET ?? 'meme';
+const salt = process.env.SALT ?? '$2b$10$JFDmxYUkJh3AwALlyTTefe';
+const hash = async (password: string) => bcrypt.hash(password, salt);
 
 app.set('view engine', 'pug');
 app.locals.basedir = __dirname;
@@ -115,7 +118,7 @@ app.post('/login', async (request, response) => {
   }
 
   const username = request.body.username;
-  const password = request.body.password;
+  const password = await hash(request.body.password);
   const result = await login(username, password);
 
   if (result && request.session) {

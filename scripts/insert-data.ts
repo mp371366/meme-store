@@ -1,13 +1,23 @@
 import * as sqlite3 from 'sqlite3';
+import { config } from 'dotenv';
+import bcrypt from 'bcrypt';
+
+config();
+
+const salt = process.env.SALT ?? '$2b$10$JFDmxYUkJh3AwALlyTTefe';
+const hash = async (password: string) => bcrypt.hash(password, salt);
 
 sqlite3.verbose();
 
 const db = new sqlite3.Database('base.db');
 
-db.run(`
-  INSERT INTO account(username, password)
-  VALUES('test', 'test')
-`);
+(async () => {
+  db.run(`
+    INSERT INTO account(username, password)
+    VALUES('test', ?)
+  `, [await hash('test')]);
+})();
+
 
 db.run(`
     INSERT INTO meme(id, name, url)
