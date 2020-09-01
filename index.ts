@@ -81,13 +81,10 @@ app.post('/meme/:memeId', async (request, response) => {
   const username = request.session?.username;
   const logged = username !== undefined;
 
-  if (!logged) {
-    response.redirect('/');
-
-    return;
+  if (logged) {
+    await updateMemePrice(request.params.memeId, request.body.price, username);
   }
 
-  await updateMemePrice(request.params.memeId, request.body.price, username);
   const meme = await getMeme(request.params.memeId);
 
   response.render('meme', {
@@ -97,6 +94,7 @@ app.post('/meme/:memeId', async (request, response) => {
     visitedPages: request.session?.pages?.length ?? 0,
     username,
     logged,
+    info: !logged ? 'Login required to set new meme price.' : undefined,
   });
 });
 
