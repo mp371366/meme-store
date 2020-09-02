@@ -22,13 +22,6 @@ db.run(`
 `);
 
 db.run(`
-  CREATE TABLE visit(
-    session_id VARCHAR(255),
-    url        VARCHAR(255)
-  )
-`);
-
-db.run(`
   CREATE TABLE account(
     username VARCHAR(255),
     password VARCHAR(255)

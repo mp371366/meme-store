@@ -3,10 +3,10 @@ import csrf from 'csurf';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import { getMostExpensive, getMeme, updateMemePrice } from './memes';
-import { addVisit, getVisits } from './session';
 import { login } from './login';
 import { config } from 'dotenv';
 import bcrypt from 'bcrypt';
+import connectSqlite3 from 'connect-sqlite3';
 
 config();
 
@@ -24,6 +24,10 @@ app.use(express.urlencoded({
 app.use(cookieParser(secret));
 app.use(csrf({ cookie: true }));
 app.use(session({
+  store: new connectSqlite3(session)({
+    table: 'session',
+    db: 'base.db',
+  }),
   secret,
   resave: false,
   saveUninitialized: true,
@@ -33,13 +37,12 @@ app.use(session({
 }));
 
 app.use(async (request, response, next) => {
-  if (request.sessionID !== undefined) {
-    if (!request.url.endsWith('.js.map') && request.method === 'GET') {
-      await addVisit(request.sessionID, request.url);
+  if (request.session !== undefined) {
+    if (request.session.pages === undefined) {
+      request.session.pages = 0;
     }
-
-    if (request.session) {
-      request.session.pages = await getVisits(request.sessionID);
+    if (!request.url.endsWith('.js.map') && request.method === 'GET') {
+      request.session.pages += 1;
     }
   }
 
@@ -56,7 +59,7 @@ app.get('/', async (request, response) => {
     message: 'Hello there!',
     memes,
     csrfToken: request.csrfToken(),
-    visitedPages: request.session?.pages?.length ?? 0,
+    visitedPages: request.session?.pages ?? 0,
     username,
     logged,
   });
@@ -71,7 +74,7 @@ app.get('/meme/:memeId', async (request, response) => {
     title: `Meme ${meme.name}`,
     meme,
     csrfToken: request.csrfToken(),
-    visitedPages: request.session?.pages?.length ?? 0,
+    visitedPages: request.session?.pages ?? 0,
     username,
     logged,
   });
@@ -91,7 +94,7 @@ app.post('/meme/:memeId', async (request, response) => {
     title: `Meme ${meme.name}`,
     meme,
     csrfToken: request.csrfToken(),
-    visitedPages: request.session?.pages?.length ?? 0,
+    visitedPages: request.session?.pages ?? 0,
     username,
     logged,
     info: !logged ? 'Login required to set new meme price.' : undefined,
@@ -101,7 +104,7 @@ app.post('/meme/:memeId', async (request, response) => {
 app.get('/login', (request, response) => {
   response.render('login', {
     title: 'Login',
-    visitedPages: request.session?.pages?.length ?? 0,
+    visitedPages: request.session?.pages ?? 0,
     csrfToken: request.csrfToken(),
   });
 });
@@ -117,7 +120,7 @@ app.post('/login', async (request, response) => {
   } else {
     response.render('login', {
       title: 'Login',
-      visitedPages: request.session?.pages?.length ?? 0,
+      visitedPages: request.session?.pages ?? 0,
       error: 'Bad login.',
       csrfToken: request.csrfToken(),
     })
